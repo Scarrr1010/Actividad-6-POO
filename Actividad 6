@@ -1,0 +1,83 @@
+import os
+from tkinter import *
+from tkinter import filedialog, messagebox
+
+class ManejoArchivos:
+    def __init__(self, raiz):
+        self.raiz = raiz
+        self.raiz.title("Menú de Archivos")
+        self.raiz.resizable(True,True)
+        self.ArchivoInicial = None  # Para almacenar el archivo abierto
+
+        self.barraMenu = Menu(raiz)
+        raiz.config(menu=self.barraMenu)
+        self.files = Menu(self.barraMenu, tearoff=0)
+
+        self.files.add_command(label="Nuevo", command=self.NuevoArchivo)
+        self.files.add_command(label="Abrir", command=self.AbrirArchivo)
+        self.files.add_command(label="Guardar", command=self.GuardarArchivo)
+        self.files.add_command(label="Guardar Como", command=self.GuardarComo)
+        self.files.add_command(label="Cerrar", command=self.CerrarArchivo)  
+        self.files.add_separator()
+        self.files.add_command(label="Salir", command=self.salir)
+
+        self.barraMenu.add_cascade(label="Archivo", menu=self.files)
+
+        self.AT = Text(raiz, wrap="word",bg="purple", fg="white", font=("Comic Sans MS", 14))
+        self.AT.pack(expand=True, fill=BOTH, padx=10, pady=10)  
+        self.AT.pack_forget()
+    
+    def MostrarAT(self):
+        if not self.AT.winfo_ismapped(): 
+            self.AT.pack(expand=True, fill=BOTH)
+
+    def NuevoArchivo(self):
+        self.ArchivoInicial = None
+        self.MostrarAT() 
+        self.AT.delete(1.0, END)
+        messagebox.showinfo("Nuevo Archivo", "Se ha creado un nuevo archivo.")
+
+    def AbrirArchivo(self):
+        Archivo = filedialog.askopenfilename(filetypes=[("Archivos de texto", "*.txt")])
+        if not Archivo:
+            return
+        file = open(Archivo, "r", encoding="utf-8")
+        contenido = file.read()
+        file.close()  
+        self.MostrarAT()  
+        self.AT.delete(1.0, END)  
+        self.AT.insert(END, contenido)
+
+    def GuardarArchivo(self):
+        if self.ArchivoInicial:  
+            file = open(self.ArchivoInicial, "w", encoding="utf-8")
+            file.write(self.AT.get(1.0, END))
+            file.close()
+            messagebox.showinfo("Guardar", "Archivo guardado correctamente.")
+
+    def GuardarComo(self):
+        Archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Archivos de texto", "*.txt")])
+        if Archivo:
+            self.ArchivoInicial = Archivo
+            file = open(self.ArchivoInicial, "w", encoding="utf-8")
+            file.write(self.AT.get(1.0, END))
+            file.close()
+            messagebox.showinfo("Guardar Como", "Archivo guardado correctamente.")
+        return Archivo
+
+    def CerrarArchivo(self):
+        if not self.ArchivoInicial:
+            return messagebox.showwarning("Cerrar", "No hay un archivo para cerrar.")
+
+        self.ArchivoInicial = None
+        self.AT.pack_forget()
+        messagebox.showinfo("Cerrar", "El archivo ha sido cerrado.")
+
+    def salir(self):
+        valor = messagebox.askokcancel("Salir", "¿Seguro que quieres salir?")
+        if valor == True:
+            self.raiz.destroy()
+
+raiz = Tk()
+ManejoArchivos(raiz)
+raiz.mainloop()
