@@ -7,7 +7,7 @@ class ManejoArchivos:
         self.raiz = raiz
         self.raiz.title("Menú de Archivos")
         self.raiz.resizable(True,True)
-        self.ArchivoInicial = None  # Para almacenar el archivo abierto
+        self.ArchivoInicial = None  
 
         self.barraMenu = Menu(raiz)
         raiz.config(menu=self.barraMenu)
