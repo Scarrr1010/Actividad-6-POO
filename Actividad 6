@@ -9,6 +9,7 @@ class ManejoArchivos:
         self.raiz.resizable(True,True)
         self.ArchivoInicial = None  
 
+
         self.barraMenu = Menu(raiz)
         raiz.config(menu=self.barraMenu)
         self.files = Menu(self.barraMenu, tearoff=0)
